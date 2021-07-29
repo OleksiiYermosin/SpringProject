@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -11,26 +11,32 @@
     <div class="container">
         <div style="display: flex; justify-content: space-between">
             <a href="/" class="d-flex align-items-center mb-lg-0 text-white text-decoration-none">
-                <p style="margin: 0; font-size: 24px; color: #ffc107">Taxi Service</p>
+                <p th:text="#{header.service.name}" style="margin: 0; font-size: 24px; color: #ffc107"></p>
             </a>
 
-            <div class="text-end">
-                <button type="button" class="btn btn-warning me-2">Login</button>
-                <button type="button" class="btn btn-warning me-4">Sign-up</button>
-                <button type="button" class="btn btn-warning me-2">UA</button>
-                <button type="button" class="btn btn-warning">ENG</button>
+            <div style="display: flex" class="text-end">
+                <a href="/login" th:text="#{header.login.value}" class="btn btn-warning me-2">Login</a>
+                <a href="/register" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
+                <form style="display: flex" method="get" action="/login" id="lang-switcher">
+                    <button type="submit" class="btn btn-warning me-2" name="locale" value="ua">
+                        UA
+                    </button>
+                    <button type="submit" class="btn btn-warning" name="locale" value="en">
+                        ENG
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </header>
 <div class="content">
-        <form action="" class="form">
-            <label style="margin-top: 10%" for="email">Enter email</label>
-            <input class="form-element" type="email" id="email">
-            <label class="form-element" for="password">Enter password</label>
-            <input class="form-element" type="text" id="password">
-            <button style="margin-bottom: 10%" type="button" class="btn btn-success">Login</button>
-        </form>
+    <form action="" class="dataForm">
+        <label th:text="#{email.prompt.value}" class="form-element" style="margin-top: 10%" for="email">Enter email</label>
+        <input class="form-element" type="email" id="email">
+        <label th:text="#{password.prompt.value}" class="form-element" for="password">Enter password</label>
+        <input class="form-element" type="text" id="password">
+        <button th:text="#{header.login.value}" style="margin-bottom: 10%" type="button" class="btn btn-success">Login</button>
+    </form>
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>
 </body>
