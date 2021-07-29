@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Main page</title>
+    <title>Registration</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -14,7 +14,7 @@
                 <p style="margin: 0; font-size: 24px; color: #ffc107">Taxi Service</p>
             </a>
 
-            <div class="text-end" >
+            <div class="text-end">
                 <button type="button" class="btn btn-warning me-2">Login</button>
                 <button type="button" class="btn btn-warning me-4">Sign-up</button>
                 <button type="button" class="btn btn-warning me-2">UA</button>
@@ -23,8 +23,20 @@
         </div>
     </div>
 </header>
-<div style="background-color: #FFEBB6; min-height: 583px; ">
-
+<div class="content">
+        <form action="" class="form">
+            <label style="margin-top: 10%" for="name">Enter name</label>
+            <input class="form-element" type="text" id="name">
+            <label class="form-element" for="surname">Enter surname</label>
+            <input class="form-element" type="text" id="surname">
+            <label class="form-element" for="email">Enter email</label>
+            <input class="form-element" type="email" id="email">
+            <label class="form-element" for="phone">Enter phone</label>
+            <input class="form-element" type="text" id="phone">
+            <label class="form-element" for="password">Enter password</label>
+            <input class="form-element" type="text" id="password">
+            <button style="margin-bottom: 10%" type="button" class="btn btn-success">Register</button>
+        </form>
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>
 </body>

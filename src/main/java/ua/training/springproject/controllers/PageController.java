@@ -11,4 +11,14 @@ public class PageController {
         return "main";
     }
 
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String registerUser(){
+        return "registration";
+    }
+
 }
