@@ -1,7 +1,9 @@
 package ua.training.springproject.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import ua.training.springproject.entities.User;
 
 @Controller
 public class PageController {
@@ -16,9 +18,15 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("/register")
-    public String registerUser(){
-        return "registration";
+    @GetMapping("/login-error")
+    public String loginError(Model model){
+        model.addAttribute("loginError", true);
+        return "login";
     }
 
+    @GetMapping("/registration")
+    public String registerUser(Model model){
+        model.addAttribute("user", new User());
+        return "registration";
+    }
 }

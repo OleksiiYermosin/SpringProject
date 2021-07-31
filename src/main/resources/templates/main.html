@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Main page</title>
@@ -14,9 +14,10 @@
                 <p th:text="#{header.service.name}" style="margin: 0; font-size: 24px; color: #ffc107"></p>
             </a>
             <div style="display: flex" class="text-end">
-                <a href="/login" th:text="#{header.login.value}" class="btn btn-warning me-2">Login</a>
-                <a href="/register" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
-                <form style="display: flex" method="get" action="/main" id="lang-switcher">
+                <a sec:authorize="!isAuthenticated()" href="/login" th:text="#{header.login.value}" class="btn btn-warning me-2">Login</a>
+                <a sec:authorize="!isAuthenticated()" href="/registration" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" th:text="#{header.logout.value}" class="btn btn-warning me-4">Log out</a>
+                <form style="display: flex" method="get" action="/" id="lang-switcher">
                     <button type="submit" class="btn btn-warning me-2" name="locale" value="ua">
                         UA
                     </button>
@@ -28,7 +29,9 @@
         </div>
     </div>
 </header>
-<div style="background-color: #FFEBB6; min-height: 583px; ">
+<div class="content">
+    <div sec:authorize="hasRole('USER')">You are user</div>
+    <div sec:authorize="hasRole('ADMIN')">You are admin</div>
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>
 </body>

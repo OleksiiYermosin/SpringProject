@@ -16,8 +16,8 @@
 
             <div style="display: flex" class="text-end">
                 <a href="/login" th:text="#{header.login.value}" class="btn btn-warning me-2">Login</a>
-                <a href="/register" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
-                <form style="display: flex" method="get" action="/login" id="lang-switcher">
+                <a href="/registration" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
+                <form style="display: flex" method="get" th:action="${#httpServletRequest.requestURI}" id="lang-switcher">
                     <button type="submit" class="btn btn-warning me-2" name="locale" value="ua">
                         UA
                     </button>
@@ -30,12 +30,14 @@
     </div>
 </header>
 <div class="content">
-    <form action="" class="dataForm">
-        <label th:text="#{email.prompt.value}" class="form-element" style="margin-top: 10%" for="email">Enter email</label>
-        <input class="form-element" type="email" id="email">
+    <form method="post" action="/login" class="dataForm">
+        <p th:if="${loginError}" th:text="#{login.wrong.values}" class="form-element" style="margin-top: 10%"></p>
+        <label th:text="#{username.prompt.value}" class="form-element" style="margin-top: 10%" for="username">Enter username</label>
+        <input name="username" class="form-element" type="text" id="username" required>
         <label th:text="#{password.prompt.value}" class="form-element" for="password">Enter password</label>
-        <input class="form-element" type="text" id="password">
-        <button th:text="#{header.login.value}" style="margin-bottom: 10%" type="button" class="btn btn-success">Login</button>
+        <input name="password" class="form-element" type="password" id="password" required>
+        <button th:text="#{header.login.value}" style="margin-bottom: 10%" type="submit" class="btn btn-success">Login</button>
+
     </form>
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>

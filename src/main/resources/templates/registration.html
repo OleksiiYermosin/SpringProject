@@ -16,8 +16,8 @@
 
             <div style="display: flex" class="text-end">
                 <a href="/login" th:text="#{header.login.value}" class="btn btn-warning me-2">Login</a>
-                <a href="/register" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
-                <form style="display: flex" method="get" action="/register" id="lang-switcher">
+                <a href="/registration" th:text="#{header.signUp.value}" class="btn btn-warning me-4">Sign-up</a>
+                <form style="display: flex" method="get" action="/registration" id="lang-switcher">
                     <button type="submit" class="btn btn-warning me-2" name="locale" value="ua">
                         UA
                     </button>
@@ -30,18 +30,23 @@
     </div>
 </header>
 <div class="content">
-        <form action="" class="dataForm">
+        <form method="post" th:object="${user}" action="/registration" class="dataForm">
             <label th:text="#{name.prompt.value}" style="margin-top: 10%" for="name">Enter name</label>
-            <input class="form-element" type="text" id="name">
+            <input th:field="*{name}" class="form-element" type="text" id="name" required>
+            <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="form-element"></p>
             <label th:text="#{surname.prompt.value}" class="form-element" for="surname">Enter surname</label>
-            <input class="form-element" type="text" id="surname">
-            <label th:text="#{email.prompt.value}" class="form-element" for="email">Enter email</label>
-            <input class="form-element" type="email" id="email">
+            <input th:field="*{surname}" class="form-element" type="text" id="surname" required>
+            <p th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="form-element"></p>
+            <label th:text="#{username.prompt.value}" class="form-element" for="username">Enter nickname</label>
+            <input th:field="*{username}" class="form-element" type="text" id="username" required>
+            <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="form-element"></p>
             <label th:text="#{phone.prompt.value}" class="form-element" for="phone">Enter phone</label>
-            <input class="form-element" type="text" id="phone">
+            <input th:field="*{phone}" class="form-element" type="text" id="phone" required>
+            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="form-element"></p>
             <label th:text="#{password.prompt.value}" class="form-element" for="password">Enter password</label>
-            <input class="form-element" type="text" id="password">
-            <button th:text="#{register.value}" style="margin-bottom: 10%" type="button" class="btn btn-success">Register</button>
+            <input th:field="*{password}" class="form-element" type="text" id="password" required>
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="form-element"></p>
+            <button th:text="#{register.value}" style="margin-bottom: 10%" type="submit" class="btn btn-success">Register</button>
         </form>
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>
