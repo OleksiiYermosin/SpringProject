@@ -81,3 +81,27 @@
 .content-container a:hover{
     color:black;
 }
+
+.main{
+    width: 80%;
+}
+
+.con {
+    padding: 0 18px;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #efe182;
+}
+
+.con p{
+    font-size: 18px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+th, td{
+    font-size: 18px;
+}

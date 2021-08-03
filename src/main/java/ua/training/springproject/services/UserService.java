@@ -10,6 +10,7 @@ import ua.training.springproject.entities.Role;
 import ua.training.springproject.entities.User;
 import ua.training.springproject.repositories.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,13 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public void updateUserBalance(long id, BigDecimal value) {
+        Optional<User> user = userRepository.findById(id);
+        User tempUser = Optional.ofNullable(user).get().orElseThrow(IllegalArgumentException::new);
+        tempUser.setBalance(tempUser.getBalance().add(value));
+        userRepository.save(tempUser);
+    }
+
     public User findUserById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new User());
@@ -55,13 +63,13 @@ public class UserService implements UserDetailsService {
 
     public boolean saveUser(User user) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
-
         if (userFromDB != null) {
             return false;
         }
-
         user.setRole(new Role(1L, "ROLE_USER"));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setBalance(new BigDecimal("0.0"));
+        user.setDiscount(new BigDecimal("0.0"));
         userRepository.save(user);
         return true;
     }

@@ -1,16 +1,20 @@
 package ua.training.springproject.entities;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Pattern;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 
 @Data
 @Entity
+@DynamicUpdate
 @Table(name = "users")
 public class User implements UserDetails {
 
@@ -30,15 +34,21 @@ public class User implements UserDetails {
 
     @Pattern(regexp="^[A-Za-z][A-Za-z0-9_-]{3,25}$",message="Username should begin from letter," +
             " can consist of letters, numbers, '-', '_'; size >=4")
-    @Column(name = "username", length = 30, nullable = false, unique = true)
+    @Column(name = "username", length = 26, nullable = false, unique = true)
     private String username;
 
     @Pattern(regexp="\\+?[0-9]{12}|[0-9]{10}",message="Use correct phone format")
     @Column(name = "phone", length = 13, nullable = false)
     private String phone;
 
-    @Pattern(regexp="^[A-Za-z][A-Za-z0-9_-]{3,25}$",message="Password should begin from letter," +
-            " can consist of letters, numbers, '-' , '_'; size >= 4")
+    @Digits(integer = 5, fraction = 2)
+    @Column(name="balance", nullable = false)
+    private BigDecimal balance;
+
+    @Digits(integer = 2, fraction = 1)
+    @Column(name="discount", nullable = false)
+    private BigDecimal discount;
+
     @Column(name = "password", nullable = false)
     private String password;
 

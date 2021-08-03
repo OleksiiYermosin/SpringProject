@@ -25,17 +25,16 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
-
         if(bindingResult.hasErrors()){
+            System.out.println("In if");
             return "registration";
         }
-
         if (!userService.saveUser(user)){
             model.addAttribute("usernameError", "User is already exist");
             return "registration";
         }
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 
 }
