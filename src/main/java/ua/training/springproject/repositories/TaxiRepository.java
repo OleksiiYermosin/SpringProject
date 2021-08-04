@@ -14,4 +14,6 @@ public interface TaxiRepository extends JpaRepository<Taxi, Long> {
                                                                                                   TaxiClass taxiClass,
                                                                                                   int capacity);
 
+
+
 }

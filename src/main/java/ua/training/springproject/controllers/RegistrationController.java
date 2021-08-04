@@ -27,11 +27,11 @@ public class RegistrationController {
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
             System.out.println("In if");
-            return "registration";
+            return "common/registration";
         }
         if (!userService.saveUser(user)){
             model.addAttribute("usernameError", "User is already exist");
-            return "registration";
+            return "common/registration";
         }
 
         return "redirect:/login";

@@ -1,11 +1,13 @@
 package ua.training.springproject.entities;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Data
+@DynamicUpdate
 @Entity
 @Table(name = "taxi")
 public class Taxi {

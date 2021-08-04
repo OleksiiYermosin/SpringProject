@@ -33,6 +33,7 @@ public class Order {
     @Column(name = "total")
     private BigDecimal total;
 
+    @Transient
     @Temporal(TemporalType.DATE)
     @Column(name = "date")
     private Calendar date;
@@ -55,6 +56,9 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "taxi_id"))
     private Set<Taxi> taxi;
+
+    @Transient
+    private BigDecimal time;
 
     public Object[] getTaxiArray(){
         Taxi[] array = new Taxi[taxi.size()];

@@ -16,8 +16,10 @@ public class Role implements GrantedAuthority {
     @Id
     @NonNull
     private Long id;
+
     @NonNull
     private String name;
+
     @Transient
     @OneToMany(mappedBy = "roles")
     private Set<User> users;

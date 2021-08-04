@@ -14,14 +14,13 @@ import ua.training.springproject.dto.OrderDTO;
 import ua.training.springproject.dto.ValueDTO;
 import ua.training.springproject.entities.Order;
 import ua.training.springproject.entities.Taxi;
-import ua.training.springproject.entities.TaxiStatus;
 import ua.training.springproject.entities.User;
 import ua.training.springproject.services.OrderService;
 import ua.training.springproject.services.TaxiService;
 import ua.training.springproject.services.UserService;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -69,30 +68,31 @@ public class UserController {
     }
 
     @PostMapping("/order-taxi")
-    public String getOrders(@ModelAttribute("orderDTO") @Valid OrderDTO orderDTO, BindingResult bindingResult, Model model){
+    public String getOrders(@ModelAttribute("orderDTO") @Valid OrderDTO orderDTO, BindingResult bindingResult, HttpSession session){
+        System.out.println("Before errors");
         if (bindingResult.hasErrors()){
             return "users/ordertaxi";
         }
-        System.out.println(orderDTO);
         Optional<Taxi> taxi = taxiService.findSuitableCar(orderDTO);
         if(taxi.isPresent()){
             Order order = orderService.prepareOrder(orderDTO, new HashSet<>(Collections.singletonList(taxi.get())), getUser());
-            model.addAttribute("order", order);
+            session.setAttribute("order", order);
             return "users/viewdetails";
         }
         return "redirect:/user/";
     }
 
-    @GetMapping("/view")
-    public String getView(Model model){
-        model.addAttribute("value", "sc");
-        return "users/viewdetails";
+    @PostMapping("/new-order")
+    public String makeOrder(HttpSession session){
+        System.out.println(session.getAttribute("order"));
+        orderService.saveOrder((Order) session.getAttribute("order"));
+        return "redirect:/user/";
     }
 
     @ModelAttribute("user")
     public User getUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findUserByUsername(authentication.getName());
+        return (User) userService.loadUserByUsername(authentication.getName());
     }
 
 }

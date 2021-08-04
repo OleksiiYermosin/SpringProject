@@ -3,6 +3,7 @@ package ua.training.springproject.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ua.training.springproject.entities.TaxiStatus;
 import ua.training.springproject.utils.annotations.FieldsNotEqual;
 
 import javax.validation.constraints.Min;
@@ -28,5 +29,7 @@ public class OrderDTO {
     private int peopleAmount = 1;
 
     private String comment;
+
+    TaxiStatus taxiStatus = new TaxiStatus(1L, "AVAILABLE");
 
 }

@@ -59,12 +59,14 @@
             </thead>
             <tbody>
             <tr>
-              <td th:text="${order.getAddressFrom()}"></td>
-              <td th:text="${order.getAddressTo()}"></td>
-              <td th:text="${order.getPeopleAmount()}"></td>
-              <td th:text="${order.getTotal()}"></td>
-              <td>
-                <button type="button" class="btn btn-success">✓</button>
+              <td th:text="${session.order.getAddressFrom()}"></td>
+              <td th:text="${session.order.getAddressTo()}"></td>
+              <td th:text="${session.order.getPeopleAmount()}"></td>
+              <td th:text="${session.order.getTotal()}"></td>
+              <td style="display: flex; justify-content: space-around">
+                <form method="post" th:action="@{new-order}">
+                  <button type="submit" class="btn btn-success">✓</button>
+                </form>
                 <button type="button" onclick="myFunction('details')" class="btn btn-info">🛈</button>
                 <button type="button" class="btn btn-danger">×</button>
               </td>
@@ -72,8 +74,9 @@
             </tbody>
           </table>
           <div class="con" id="details">
-            <p th:each="taxi : ${order.getTaxiArray()}" th:text="#{taxi.info.message }+ ': ' + ${taxi.getInfo()}"></p>
-            <p th:text="#{distance.value} + ': ' + ${order.getDistance()}"></p>
+            <p th:each="taxi : ${session.order.getTaxi()}" th:text="#{taxi.info.message }+ ': ' + ${taxi.getInfo()}"></p>
+            <p th:text="#{distance.value} + ': ' + ${session.order.getDistance()}"></p>
+            <p th:text="#{estimated.time} + ': ' + ${session.order.getTime()}"></p>
           </div>
         </div>
       </div>

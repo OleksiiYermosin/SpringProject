@@ -3,7 +3,6 @@ package ua.training.springproject.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.training.springproject.entities.Role;
@@ -11,8 +10,6 @@ import ua.training.springproject.entities.User;
 import ua.training.springproject.repositories.UserRepository;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -27,59 +24,32 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
-    }
-
-    public User findUserByUsername(String username) throws UsernameNotFoundException{
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return user;
+    public UserDetails loadUserByUsername(String username) throws IllegalArgumentException {
+        return userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
     }
 
     public void updateUserBalance(long id, BigDecimal value) {
-        Optional<User> user = userRepository.findById(id);
-        User tempUser = Optional.ofNullable(user).get().orElseThrow(IllegalArgumentException::new);
-        tempUser.setBalance(tempUser.getBalance().add(value));
-        userRepository.save(tempUser);
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        user.setBalance(user.getBalance().add(value));
+        userRepository.save(user);
     }
 
     public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
-    }
-
-    public List<User> allUsers() {
-        return userRepository.findAll();
+        return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
     }
 
     public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
-        if (userFromDB != null) {
+        try {
+            User userFromDB = userRepository.findByUsername(user.getName()).orElseThrow(IllegalArgumentException::new);
             return false;
+        }catch (IllegalArgumentException ex){
+            user.setRole(new Role(1L, "ROLE_USER"));
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setBalance(new BigDecimal("0.0"));
+            user.setDiscount(new BigDecimal("0.0"));
+            userRepository.save(user);
         }
-        user.setRole(new Role(1L, "ROLE_USER"));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setBalance(new BigDecimal("0.0"));
-        user.setDiscount(new BigDecimal("0.0"));
-        userRepository.save(user);
         return true;
-    }
-
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
     }
 
 }
