@@ -52,7 +52,7 @@
                     <div th:if="${session.order==null}" style="display: flex; align-items: center; justify-content: center">
                         <p th:text="#{session.error.message}" style="font-size: 18px"></p>
                     </div>
-                    <table th:if="${session.isFound==true && session.order!=null}" class="table">
+                    <table th:if="${session.order!=null}" class="table">
                         <thead class="thead-dark">
                         <tr>
                             <th scope="col" th:text="#{start.address.prompt}"></th>
@@ -82,7 +82,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div th:if="${session.isFound==true && session.order!=null}" th:each="order, iter : ${session.order}" class="con" th:id="'details'+${iter.index}">
+                    <div th:if="${session.order!=null}" th:each="order, iter : ${session.order}" class="con" th:id="'details'+${iter.index}">
                         <p th:each="taxi : ${order.getTaxi()}"
                            th:text="#{taxi.info.message }+ ': ' + ${taxi.getInfo()}"></p>
                         <p th:text="#{distance.value} + ': ' + ${order.getDistance()}"></p>
