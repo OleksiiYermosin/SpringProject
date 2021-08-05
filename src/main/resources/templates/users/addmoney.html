@@ -44,7 +44,8 @@
     <div style="width: available" class="content">
         <div class="container" style="display: flex; justify-content: center">
             <form method="post" th:object="${valueDTO}" th:action="@{recharge-balance}" class="dataForm">
-                <label th:text="#{money.prompt.value}" class="form-element" style="margin-top: 10%" for="value"></label>
+                <p th:if="${total!=null}" th:inline="text" class="form-element" style="margin-top: 10%">[[#{money.error.message}]]: <span th:text="${total}"></span></p>
+                <label th:if="${total==null}" th:text="#{money.prompt.value}" class="form-element" style="margin-top: 10%" for="value"></label>
                 <input name="username" th:field="*{value}" class="form-element" type="text" id="value" required>
                 <p th:if="${#fields.hasErrors('value')}" th:text="#{recharge.balance.error.message}"></p>
                 <button th:text="#{recharge.balance.value}" style="margin-bottom: 10%" type="submit" class="btn btn-success"></button>

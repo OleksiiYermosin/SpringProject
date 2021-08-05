@@ -5,6 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.training.springproject.entities.Role;
 import ua.training.springproject.entities.User;
 import ua.training.springproject.repositories.UserRepository;
@@ -28,16 +30,29 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateUserBalance(long id, BigDecimal value) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         user.setBalance(user.getBalance().add(value));
         userRepository.save(user);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public boolean getMoneyFromUser(BigDecimal total, Long id){
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (user.getBalance().compareTo(total)==-1){
+            return false;
+        }
+        user.setBalance(user.getBalance().subtract(total));
+        userRepository.save(user);
+        return true;
+    }
+
     public User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean saveUser(User user) {
         try {
             User userFromDB = userRepository.findByUsername(user.getName()).orElseThrow(IllegalArgumentException::new);

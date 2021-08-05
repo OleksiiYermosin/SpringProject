@@ -2,6 +2,8 @@ package ua.training.springproject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.training.springproject.dto.OrderDTO;
 import ua.training.springproject.entities.*;
 import ua.training.springproject.repositories.OrderRepository;
@@ -44,6 +46,7 @@ public class OrderService {
                 .build();
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveOrder(Order order) {
         orderRepository.save(order);
         order.getTaxi().forEach(taxiService::updateTaxiStatus);

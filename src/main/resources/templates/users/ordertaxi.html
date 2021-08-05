@@ -47,11 +47,23 @@
             <div class="content-container">
                 <form method="post" th:object="${orderDTO}" th:action="@{order-taxi}" class="dataForm">
                     <label th:text="#{start.address.prompt}" class="form-element" style="margin-top: 10%" for="startAddress"></label>
-                    <input name="startAddress" th:field="*{startAddress}" class="form-element" type="text" id="startAddress" required>
+                    <select th:field="*{startAddress}" id="startAddress" style="width: 185px" class="form-element" required>
+                        <option selected th:value="'вул. Перша, б. 1'" th:text="#{first.street.value}"></option>
+                        <option th:value="'вул. Друга, б. 2'" th:text="#{second.street.value}"></option>
+                        <option th:value="'вул. Третя, б. 3'" th:text="#{third.street.value}"></option>
+                        <option th:value="'вул. Четверта, б. 4'" th:text="#{fourth.street.value}"></option>
+                        <option th:value="'вул. П`ята, б. 5'" th:text="#{fifth.street.value}"></option>
+                    </select>
                     <p th:if="${#fields.hasAnyErrors()}" th:text="#{order.taxi.address.error.message}" style="font-size: 16px" class="form-element"></p>
 
                     <label th:text="#{finish.address.prompt}" class="form-element" for="finishAddress"></label>
-                    <input name="finishAddress" th:field="*{finishAddress}" class="form-element" type="text" id="finishAddress" required>
+                    <select th:field="*{finishAddress}" id="finishAddress" style="width: 185px" class="form-element" required>
+                        <option selected th:value="'вул. Перша, б. 1'" th:text="#{first.street.value}"></option>
+                        <option th:value="'вул. Друга, б. 2'" th:text="#{second.street.value}"></option>
+                        <option th:value="'вул. Третя, б. 3'" th:text="#{third.street.value}"></option>
+                        <option th:value="'вул. Четверта, б. 4'" th:text="#{fourth.street.value}"></option>
+                        <option th:value="'вул. П`ята, б. 5'" th:text="#{fifth.street.value}"></option>
+                    </select>
                     <p th:if="${#fields.hasAnyErrors()}" th:text="#{order.taxi.address.error.message}" style="font-size: 16px" class="form-element"></p>
 
                     <label th:text="#{taxi.class.prompt}" for="taxiClassCombo" class="form-element"></label>

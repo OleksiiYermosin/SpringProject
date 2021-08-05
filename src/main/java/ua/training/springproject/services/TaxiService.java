@@ -2,6 +2,8 @@ package ua.training.springproject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ua.training.springproject.dto.OrderDTO;
 import ua.training.springproject.entities.Taxi;
 import ua.training.springproject.entities.TaxiClass;
@@ -23,12 +25,14 @@ public class TaxiService {
         this.taxiClassRepository = taxiClassRepository;
     }
 
+    @Transactional
     public void updateTaxiStatus(Taxi taxiToUpdate) {
         Taxi taxi = taxiRepository.findById(taxiToUpdate.getId()).orElseThrow(IllegalArgumentException::new);
         taxi.setTaxiStatus(taxiToUpdate.getTaxiStatus());
         taxiRepository.save(taxi);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Optional<Taxi> findSuitableCar(OrderDTO orderDTO) {
         TaxiClass taxiClass = taxiClassRepository.findByName(orderDTO.getTaxiClass()).orElseThrow(IllegalArgumentException::new);
         return taxiRepository.findFirstByTaxiStatusAndTaxiClassAndCapacityGreaterThanEqualOrderByCapacityAsc(orderDTO.getTaxiStatus(),
