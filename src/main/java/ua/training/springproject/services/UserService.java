@@ -5,11 +5,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.training.springproject.entities.Role;
 import ua.training.springproject.entities.User;
 import ua.training.springproject.repositories.UserRepository;
+import ua.training.springproject.utils.constants.MyConstants;
 
 import java.math.BigDecimal;
 
@@ -30,14 +30,14 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void updateUserBalance(long id, BigDecimal value) {
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         user.setBalance(user.getBalance().add(value));
         userRepository.save(user);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public boolean getMoneyFromUser(BigDecimal total, Long id){
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         if (user.getBalance().compareTo(total)==-1){
@@ -48,11 +48,18 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+    @Transactional
+    public boolean increaseDiscount(Long id){
+        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        user.setDiscount(user.getDiscount().add(BigDecimal.valueOf(MyConstants.DISCOUNT_STEP)));
+        if(user.getDiscount().compareTo(BigDecimal.valueOf(30.0))<=0){
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public boolean saveUser(User user) {
         try {
             User userFromDB = userRepository.findByUsername(user.getName()).orElseThrow(IllegalArgumentException::new);

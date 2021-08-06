@@ -1,15 +1,17 @@
 package ua.training.springproject.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @DynamicUpdate
 @Entity
 @Table(name = "taxi")
+
 public class Taxi {
 
     @Id
@@ -34,7 +36,5 @@ public class Taxi {
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
 
-    @ManyToMany(mappedBy = "taxi")
-    private Set<Order> orders;
 
 }

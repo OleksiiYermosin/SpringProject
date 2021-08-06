@@ -1,5 +1,9 @@
 package ua.training.springproject.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Calendar;
+import java.sql.Date;
 import java.util.Set;
 
 @Data
@@ -33,10 +37,9 @@ public class Order {
     @Column(name = "total")
     private BigDecimal total;
 
-    @Transient
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @Column(name = "date")
-    private Calendar date;
+    private Date date;
 
     @Column(name = "address_from")
     private String addressFrom;
@@ -50,7 +53,7 @@ public class Order {
     @Column(name = "people")
     private int peopleAmount;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "order_taxi",
             joinColumns = @JoinColumn(name = "order_id"),
@@ -59,12 +62,5 @@ public class Order {
 
     @Transient
     private BigDecimal time;
-
-    public Object[] getTaxiArray(){
-        Taxi[] array = new Taxi[taxi.size()];
-        taxi.toArray(array);
-        return array;
-    }
-
 
 }

@@ -83,11 +83,15 @@
 }
 
 .main{
-    width: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .con {
     padding: 0 18px;
+    margin-bottom: 1%;
     display: none;
     flex-direction: column;
     align-items: flex-start;
@@ -104,4 +108,22 @@
 
 th, td{
     font-size: 18px;
+}
+
+li{
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
+
+.sorting-form{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.sorting-form-element{
+    margin-right: 2%;
 }

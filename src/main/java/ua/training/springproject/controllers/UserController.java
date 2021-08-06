@@ -1,6 +1,7 @@
 package ua.training.springproject.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -120,10 +121,27 @@ public class UserController {
     }
 
     @GetMapping("/orders")
-    public String viewOrder(@RequestParam(defaultValue = "0") Integer page,
-                            @RequestParam(defaultValue = "id") String sort) {
+    public String viewOrder(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                            @RequestParam(name = "sort", defaultValue = "orderStatus") String sort,
+                            @RequestParam(name = "sortDirection", defaultValue = "asc") String direction,
+                            Model model) {
+        Page<Order> orders = orderService.getPaginatedOrders(page, sort, direction);
+        model.addAttribute("orders", orders);
+        model.addAttribute("sort", sort);
+        model.addAttribute("sortDirection", direction);
+        return "users/vieworders";
+    }
 
-        return "users/viewdetails";
+    @PostMapping("/orders/cancel")
+    public String cancelActiveOrder(@RequestParam(name = "id") Long id) {
+        orderService.processOrder(id, getUser().getId(), true);
+        return "redirect:/user/orders";
+    }
+
+    @PostMapping("/orders/finish")
+    public String finishActiveOrder(@RequestParam(name = "id") Long id) {
+        orderService.processOrder(id, getUser().getId(), false);
+        return "redirect:/user/orders";
     }
 
     @ModelAttribute("user")

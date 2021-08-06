@@ -8,6 +8,7 @@ import org.w3c.dom.stylesheets.LinkStyle;
 import ua.training.springproject.dto.OrderDTO;
 import ua.training.springproject.entities.Taxi;
 import ua.training.springproject.entities.TaxiClass;
+import ua.training.springproject.entities.TaxiStatus;
 import ua.training.springproject.repositories.TaxiClassRepository;
 import ua.training.springproject.repositories.TaxiRepository;
 
@@ -27,13 +28,13 @@ public class TaxiService {
     }
 
     @Transactional
-    public void updateTaxiStatus(Taxi taxiToUpdate) {
+    public void updateTaxiStatus(Taxi taxiToUpdate, TaxiStatus taxiStatus) {
         Taxi taxi = taxiRepository.findById(taxiToUpdate.getId()).orElseThrow(IllegalArgumentException::new);
-        taxi.setTaxiStatus(taxiToUpdate.getTaxiStatus());
+        taxi.setTaxiStatus(taxiStatus);
         taxiRepository.save(taxi);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Optional<Taxi> findSuitableCar(OrderDTO orderDTO) {
         TaxiClass taxiClass = taxiClassRepository.findByName(orderDTO.getTaxiClass()).orElseThrow(IllegalArgumentException::new);
         return taxiRepository.findFirstByTaxiStatusAndTaxiClassAndCapacityGreaterThanEqualOrderByCapacityAsc(orderDTO.getTaxiStatus(),
@@ -45,7 +46,7 @@ public class TaxiService {
         return taxiRepository.findByTaxiStatusAndCapacityGreaterThanEqualOrderByTaxiClass(orderDTO.getTaxiStatus(), orderDTO.getPeopleAmount());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Set<Taxi> findSeveralTaxi(OrderDTO orderDTO) {
         Set<Taxi> taxiResult = new HashSet<>();
         if(taxiRepository.getSumOfCapacity(orderDTO.getTaxiStatus())<orderDTO.getPeopleAmount()){

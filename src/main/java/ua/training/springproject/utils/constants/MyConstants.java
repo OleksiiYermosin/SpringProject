@@ -11,4 +11,10 @@ public interface MyConstants {
 
     double INITIAL_PRICE = 40;
 
+    int PAGE_SIZE = 4;
+
+    double MAX_DISCOUNT = 30;
+
+    double DISCOUNT_STEP = 0.1;
+
 }
