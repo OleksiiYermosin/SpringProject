@@ -1,4 +1,4 @@
-package ua.training.springproject.configs;
+package ua.training.springproject.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;

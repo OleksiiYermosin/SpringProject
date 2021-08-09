@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ua.training.springproject.services.UserService;
+import ua.training.springproject.utils.CustomSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -20,8 +21,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf()
+        httpSecurity.csrf()
                     .disable()
                 .authorizeRequests()
                     .antMatchers("/", "/css/*", "/js/*", "/img/*").permitAll()
@@ -38,8 +38,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .logout()
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
                     .logoutSuccessUrl("/login")
                     .permitAll();
+
     }
 
     @Bean

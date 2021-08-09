@@ -1,18 +1,20 @@
 package ua.training.springproject.services;
 
+import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ua.training.springproject.dto.OrderDTO;
+import ua.training.springproject.dto.PageInfoDTO;
 import ua.training.springproject.entities.*;
 import ua.training.springproject.repositories.OrderRepository;
 import ua.training.springproject.repositories.OrderStatusRepository;
 import ua.training.springproject.repositories.TaxiStatusRepository;
+import ua.training.springproject.utils.FilterPredicate;
 import ua.training.springproject.utils.constants.MyConstants;
 
 import java.math.BigDecimal;
@@ -65,28 +67,37 @@ public class OrderService {
         order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, t.getTaxiStatus()));
     }
 
-    public Page<Order> getPaginatedOrders(int pageNumber, String sort, String direction){
-        Pageable pageable;
-        if (direction.equals("desc")){
-            pageable = PageRequest.of(pageNumber, MyConstants.PAGE_SIZE, Sort.by(sort).descending());
-        }else{
-            pageable = PageRequest.of(pageNumber, MyConstants.PAGE_SIZE, Sort.by(sort).ascending());
-        }
-        return orderRepository.findAll(pageable);
+    public Page<Order> getPaginatedOrders(PageInfoDTO pageInfoDTO, Predicate predicate) {
+        Pageable pageable = PageRequest.of(pageInfoDTO.getPage(), MyConstants.PAGE_SIZE,
+                pageInfoDTO.getSortDirection().equals("desc") ? Sort.by(pageInfoDTO.getSort()).descending() : Sort.by(pageInfoDTO.getSort()).ascending());
+        return (predicate == null ? orderRepository.findAll(pageable) : orderRepository.findAll(predicate, pageable));
+    }
+
+    public Page<Order> getPaginatedOrdersByUser(Integer page, String sort, String sortDirection, User user) {
+        Pageable pageable = PageRequest.of(page, MyConstants.PAGE_SIZE,
+                sortDirection.equals("desc") ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+        return orderRepository.findAllByUser(user, pageable);
     }
 
     @Transactional
-    public void processOrder(Long orderId, Long userId, boolean delete){
+    public void processOrder(Long orderId, boolean delete) {
         Order order = orderRepository.getById(orderId);
         order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, taxiStatusRepository.findByName("AVAILABLE").orElseThrow(IllegalArgumentException::new)));
-        if(delete){
+        if (delete) {
             order.setOrderStatus(orderStatusRepository.findByName("CANCELED").orElseThrow(IllegalArgumentException::new));
-            userService.updateUserBalance(userId, order.getTotal().subtract(BigDecimal.valueOf(MyConstants.INITIAL_PRICE)));
-        }else {
+            userService.updateUserBalance(order.getUser().getId(), order.getTotal().subtract(BigDecimal.valueOf(MyConstants.INITIAL_PRICE)));
+        } else {
             order.setOrderStatus(orderStatusRepository.findByName("DONE").orElseThrow(IllegalArgumentException::new));
-            userService.increaseDiscount(userId);
+            userService.increaseDiscount(order.getUser().getId());
         }
         orderRepository.save(order);
+    }
+
+    public Predicate makePredicate(PageInfoDTO pageInfoDTO){
+        String[] data = (pageInfoDTO.getSurnameAndName()!=null && pageInfoDTO.getSurnameAndName().contains(" ") && pageInfoDTO.getSurnameAndName().length()>2 ? pageInfoDTO.getSurnameAndName().split(" ") : new String[]{null, null}) ;
+        return FilterPredicate.builder().add(pageInfoDTO.isSearchByName() ? data[0] : null, QOrder.order.user.surname::eq)
+                .add(pageInfoDTO.isSearchByName() ? data[1] : null, QOrder.order.user.name::eq)
+                .add(pageInfoDTO.isSearchByDate() ? pageInfoDTO.getDate() : null, QOrder.order.date::eq).build();
     }
 
     private BigDecimal calculateTimeOrDistance(String hashString, double multiplier, int scale) {
@@ -99,5 +110,6 @@ public class OrderService {
         double value = multiplier * ((distance * MyConstants.ADDITIONAL_PRICE) + MyConstants.INITIAL_PRICE);
         return BigDecimal.valueOf(value - (value * discount / 100)).setScale(2, BigDecimal.ROUND_UP);
     }
+
 
 }

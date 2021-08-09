@@ -91,12 +91,13 @@
 
 .con {
     padding: 0 18px;
+    height: 110px;
     margin-bottom: 1%;
     display: none;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    overflow: hidden;
+    overflow: auto;
     background-color: #efe182;
 }
 
@@ -117,13 +118,34 @@ li{
 
 .sorting-form{
     display: flex;
+    width: 60%;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    margin-top: 1%;
+    margin-top: 5%;
     margin-bottom: 1%;
 }
 
-.sorting-form-element{
+.form-inner{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.sorting-form-element {
     margin-right: 2%;
+    text-align: end;
+    width: 135px;
+}
+.sorting-form-small {
+    margin-right: 2%;
+}
+
+.form1{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 10px;
 }

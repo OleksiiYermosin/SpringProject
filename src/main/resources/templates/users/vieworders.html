@@ -57,8 +57,7 @@
                         <select name="sort" id="sort" class="sorting-form-element" required>
                             <option th:selected="${sort.equals('id')}"  value="id" th:text="#{sort.id.message}"></option>
                             <option th:selected="${sort.equals('date')}" value="date" th:text="#{sort.date.message}"></option>
-                            <option th:selected="${sort.equals('orderStatus')}" value="orderStatus" th:text="#{sort.status.message}"></option>
-                        </select>
+                         </select>
                         <label for="sort-direction" th:text="#{sort.direction.message}" class="sorting-form-element"></label>
                         <select name="sortDirection" id="sort-direction" class="sorting-form-element" required>
                             <option th:selected="${sortDirection.equals('asc')}" value="asc" th:text="#{sort.direction.asc.message}"></option>
