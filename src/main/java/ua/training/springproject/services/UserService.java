@@ -31,10 +31,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUserBalance(long id, BigDecimal value) {
-        User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        user.setBalance(user.getBalance().add(value));
-        userRepository.save(user);
+    public boolean updateUserBalance(long id, BigDecimal value) {
+        try {
+            User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+            user.setBalance(user.getBalance().add(value));
+            userRepository.save(user);
+        }catch (IllegalArgumentException exception){
+            return false;
+        }
+        return true;
     }
 
     @Transactional
@@ -62,12 +67,12 @@ public class UserService implements UserDetailsService {
     @Transactional
     public boolean saveUser(User user) {
         try {
-            User userFromDB = userRepository.findByUsername(user.getName()).orElseThrow(IllegalArgumentException::new);
+            userRepository.findByUsername(user.getName()).orElseThrow(IllegalArgumentException::new);
             return false;
         }catch (IllegalArgumentException ex){
             user.setRole(new Role(1L, "ROLE_USER"));
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setBalance(new BigDecimal("0.0"));
+            user.setBalance(new BigDecimal("0.00"));
             user.setDiscount(new BigDecimal("0.0"));
             userRepository.save(user);
         }

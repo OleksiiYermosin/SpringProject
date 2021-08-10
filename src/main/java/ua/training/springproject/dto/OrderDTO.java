@@ -1,6 +1,7 @@
 package ua.training.springproject.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ua.training.springproject.entities.TaxiStatus;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldsNotEqual(firstField = "startAddress", secondField = "finishAddress", message = "Addresses must be different")

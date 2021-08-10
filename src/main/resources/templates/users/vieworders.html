@@ -93,7 +93,9 @@
                                     <input type="hidden" th:value="${order.getId()}" name="id">
                                     <button type="submit" class="btn btn-success">✓</button>
                                 </form>
-                                <button type="button" th:if="${!order.getOrderStatus().getName().equals('CANCELED')}" th:attr="onclick=|myFunction('details${iter.index}')|" class="btn btn-info">🛈</button>
+                                <button type="button" th:if="${!order.getOrderStatus().getName().equals('CANCELED')}" th:attr="onclick=|myFunction('details${iter.index}')|" class="btn btn-info">
+                                    <span style="font-style: italic; font-weight: bold">i</span>
+                                </button>
                                 <form method="post" th:if="${order.getOrderStatus().getName().equals('ACTIVE')}" th:action="@{/user/orders/cancel}">
                                     <input type="hidden" th:value="${order.getId()}" name="id">
                                     <button type="submit" class="btn btn-danger">×</button>
@@ -106,13 +108,13 @@
                     <div th:if="${orders.isEmpty()==false}" th:each="order, iter : ${orders}" class="con" th:id="'details'+${iter.index}">
                         <div th:each="taxi : ${order.getTaxi()}">
                             <p th:text="#{taxi.info.message } + ': ' + ${taxi.getInfo()} + '. ' + #{driver.name.value} + ': ' + ${taxi.getDriver().getSurname() + ' ' + taxi.getDriver().getName().charAt(0)} + '.; ' + #{driver.phone.value} + ': ' + ${taxi.getDriver().getPhone()}"></p>
-                            <p th:if="${taxi.getTaxiClass().getName().equals('ECONOMY')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.economy.value}"></p>
-                            <p th:if="${taxi.getTaxiClass().getName().equals('COMFORT')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.comfort.value}"></p>
-                            <p th:if="${taxi.getTaxiClass().getName().equals('BUSINESS')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.business.value}"></p>
+                            <p th:if="${taxi.getTaxiClass().getName().equals('ECONOMY')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.economy.value} + '. ' + #{order.taxi.capacity} + ': ' + ${taxi.getCapacity()}"></p>
+                            <p th:if="${taxi.getTaxiClass().getName().equals('COMFORT')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.comfort.value} + '. ' + #{order.taxi.capacity} + ': ' + ${taxi.getCapacity()}"></p>
+                            <p th:if="${taxi.getTaxiClass().getName().equals('BUSINESS')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.business.value} + '. ' + #{order.taxi.capacity} + ': ' + ${taxi.getCapacity()}"></p>
                         </div>
                         <p th:text="#{distance.value} + ': ' + ${order.getDistance()}" style="margin-top: 0"></p>
                     </div>
-                    <div th:if="${orders.isEmpty()==false && (orders.hasNext()||orders.hasPrevious())}" style="display: flex; flex-direction: row; justify-content: center">
+                    <div th:if="${orders.isEmpty()==false && (orders.hasNext()||orders.hasPrevious())}" style="display: flex; flex-direction: row; justify-content: center; margin-bottom: 5%">
                         <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.isFirst()==false}" th:action="@{/user/orders}">
                             <input type="hidden" th:value="${orders.previousOrFirstPageable().first().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${sort}" name="sort">

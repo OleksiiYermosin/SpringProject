@@ -93,8 +93,8 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public Predicate makePredicate(PageInfoDTO pageInfoDTO){
-        String[] data = (pageInfoDTO.getSurnameAndName()!=null && pageInfoDTO.getSurnameAndName().contains(" ") && pageInfoDTO.getSurnameAndName().length()>2 ? pageInfoDTO.getSurnameAndName().split(" ") : new String[]{null, null}) ;
+    public Predicate makePredicate(PageInfoDTO pageInfoDTO) {
+        String[] data = (pageInfoDTO.getSurnameAndName() != null && pageInfoDTO.getSurnameAndName().contains(" ") && pageInfoDTO.getSurnameAndName().length() > 2 ? pageInfoDTO.getSurnameAndName().split(" ") : new String[]{null, null});
         return FilterPredicate.builder().add(pageInfoDTO.isSearchByName() ? data[0] : null, QOrder.order.user.surname::eq)
                 .add(pageInfoDTO.isSearchByName() ? data[1] : null, QOrder.order.user.name::eq)
                 .add(pageInfoDTO.isSearchByDate() ? pageInfoDTO.getDate() : null, QOrder.order.date::eq).build();

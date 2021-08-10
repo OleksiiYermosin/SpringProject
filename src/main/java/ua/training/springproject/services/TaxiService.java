@@ -2,9 +2,7 @@ package ua.training.springproject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.stylesheets.LinkStyle;
 import ua.training.springproject.dto.OrderDTO;
 import ua.training.springproject.entities.Taxi;
 import ua.training.springproject.entities.TaxiClass;
@@ -28,15 +26,22 @@ public class TaxiService {
     }
 
     @Transactional
-    public void updateTaxiStatus(Taxi taxiToUpdate, TaxiStatus taxiStatus) {
-        Taxi taxi = taxiRepository.findById(taxiToUpdate.getId()).orElseThrow(IllegalArgumentException::new);
-        taxi.setTaxiStatus(taxiStatus);
-        taxiRepository.save(taxi);
+    public boolean updateTaxiStatus(Taxi taxiToUpdate, TaxiStatus taxiStatus) {
+        try {
+            Taxi taxi = taxiRepository.findById(taxiToUpdate.getId()).orElseThrow(IllegalArgumentException::new);
+            taxi.setTaxiStatus(taxiStatus);
+            taxiRepository.save(taxi);
+        }catch(IllegalArgumentException exception){
+            return false;
+        }
+        return true;
     }
 
     @Transactional
     public Optional<Taxi> findSuitableCar(OrderDTO orderDTO) {
         TaxiClass taxiClass = taxiClassRepository.findByName(orderDTO.getTaxiClass()).orElseThrow(IllegalArgumentException::new);
+        System.out.println(taxiRepository.findFirstByTaxiStatusAndTaxiClassAndCapacityGreaterThanEqualOrderByCapacityAsc(orderDTO.getTaxiStatus(),
+                taxiClass, orderDTO.getPeopleAmount()));
         return taxiRepository.findFirstByTaxiStatusAndTaxiClassAndCapacityGreaterThanEqualOrderByCapacityAsc(orderDTO.getTaxiStatus(),
                 taxiClass, orderDTO.getPeopleAmount());
     }
@@ -53,10 +58,22 @@ public class TaxiService {
             return taxiResult;
         }
         List<Taxi> taxiFromDb = new ArrayList<>(taxiRepository.findByTaxiStatusOrderByCapacityDesc(orderDTO.getTaxiStatus()));
+        System.out.println(taxiFromDb);
         for(int i = 0, realCapacity = 0; realCapacity < orderDTO.getPeopleAmount(); i++){
             taxiResult.add(taxiFromDb.get(i));
             realCapacity += taxiFromDb.get(i).getCapacity();
         }
         return taxiResult;
+    }
+
+    @Transactional
+    public boolean saveTaxi(Taxi taxi){
+        try {
+            taxiRepository.findByInfo(taxi.getInfo()).orElseThrow(IllegalArgumentException::new);
+            return false;
+        }catch (IllegalArgumentException exception){
+            taxiRepository.save(taxi);
+        }
+        return true;
     }
 }

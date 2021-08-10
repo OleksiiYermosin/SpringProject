@@ -21,6 +21,8 @@ public interface TaxiRepository extends JpaRepository<Taxi, Long> {
 
     Set<Taxi> findByTaxiStatusOrderByCapacityDesc(TaxiStatus taxiStatus);
 
+    Optional<Taxi> findByInfo(String info);
+
     @Query("SELECT SUM(t.capacity) FROM Taxi t WHERE t.taxiStatus=?1")
     Integer getSumOfCapacity(TaxiStatus taxiStatus);
 }

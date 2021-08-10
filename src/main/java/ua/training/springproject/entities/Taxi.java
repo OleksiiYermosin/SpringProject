@@ -2,12 +2,18 @@ package ua.training.springproject.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @DynamicUpdate
 @Entity
 @Table(name = "taxi")
