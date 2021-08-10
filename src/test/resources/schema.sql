@@ -1,6 +1,9 @@
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS taxi_classes;
+DROP TABLE IF EXISTS taxi_statuses;
+DROP TABLE IF EXISTS drivers;
+DROP TABLE IF EXISTS taxi;
 
 CREATE TABLE roles
 (
@@ -55,4 +58,33 @@ CREATE TABLE taxi
     FOREIGN KEY (taxi_class_id) references taxi_classes (id),
     FOREIGN KEY (taxi_status_id) references taxi_statuses (id),
     FOREIGN KEY (driver_id) references drivers (id)
-)
+);
+
+CREATE TABLE order_statuses
+(
+    id   bigint PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    name character varying NOT NULL
+);
+
+CREATE TABLE orders
+(
+    id           bigint PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    user_id      bigint                    NOT NULL,
+    status_id    bigint                    NOT NULL,
+    total        numeric(7, 2)             NOT NULL,
+    date         date DEFAULT CURRENT_DATE NOT NULL,
+    address_from character varying         NOT NULL,
+    address_to   character varying         NOT NULL,
+    distance     numeric(5, 2)             NOT NULL,
+    people       integer,
+    FOREIGN KEY (user_id) references users (id)
+);
+
+CREATE TABLE order_taxi
+(
+    order_id bigint NOT NULL,
+    taxi_id  bigint NOT NULL,
+    PRIMARY KEY (order_id, taxi_id),
+    FOREIGN KEY (order_id) references orders (id),
+    FOREIGN KEY (taxi_id) references taxi (id)
+);

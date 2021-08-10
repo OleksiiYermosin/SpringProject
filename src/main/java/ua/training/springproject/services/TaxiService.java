@@ -58,7 +58,6 @@ public class TaxiService {
             return taxiResult;
         }
         List<Taxi> taxiFromDb = new ArrayList<>(taxiRepository.findByTaxiStatusOrderByCapacityDesc(orderDTO.getTaxiStatus()));
-        System.out.println(taxiFromDb);
         for(int i = 0, realCapacity = 0; realCapacity < orderDTO.getPeopleAmount(); i++){
             taxiResult.add(taxiFromDb.get(i));
             realCapacity += taxiFromDb.get(i).getCapacity();

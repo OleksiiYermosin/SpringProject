@@ -1,7 +1,6 @@
 package ua.training.springproject;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.training.springproject.entities.Role;
 import ua.training.springproject.entities.User;
 import ua.training.springproject.repositories.RoleRepository;
 import ua.training.springproject.services.UserService;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringProjectApplication.class)
@@ -38,26 +35,22 @@ public class UserServiceTest {
     @BeforeClass
     public static void createUser(){
         testUser = User.builder().name("Name").surname("Surname").username("test").phone("+380555555555")
-                .password("123").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).build();
-    }
-
-    @Before
-    public void insertData(){
-        roleRepository.save(new Role(1L, "ROLE_USER"));
-        roleRepository.save(new Role(2L, "ROLE_ADMIN"));
-        userService.saveUser(testUser);
+                .password("$2a$10$FqMqlNj0UT85V/Vqf50VZ./VgG9bFcCc0BgNFK3K8Zg019wFl.uMO")
+                .accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).build();
     }
 
     @Test
     public void testUserSearch() {
         UserDetails user = userService.loadUserByUsername("test");
-        Assert.assertTrue(Objects.deepEquals(user, testUser));
+        Assert.assertNotNull(user);
     }
 
     @Test
     public void testBalanceGrowth(){
         Long id = ((User) userService.loadUserByUsername("test")).getId();
-        Assert.assertTrue(userService.updateUserBalance(id, BigDecimal.valueOf(5)));
+        boolean result = userService.updateUserBalance(id, BigDecimal.valueOf(5));
+        userService.updateUserBalance(id, BigDecimal.valueOf(-5));
+        Assert.assertTrue(result);
     }
 
     @Test
@@ -83,7 +76,10 @@ public class UserServiceTest {
 
     @Test
     public void testUserSaving() {
-        boolean result = userService.saveUser(testUser);
+        User newUser = User.builder().name("Test").surname("Test").username("test1").phone("+380555555555")
+                .password("qwerty")
+                .accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).build();
+        boolean result = userService.saveUser(newUser);
         Assert.assertTrue(result);
     }
 

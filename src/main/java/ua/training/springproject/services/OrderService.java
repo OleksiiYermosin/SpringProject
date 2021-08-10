@@ -61,10 +61,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void saveOrder(Order order) {
+    public Long saveOrder(Order order) {
         order.setDate(Date.valueOf(LocalDate.now()));
-        orderRepository.save(order);
         order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, t.getTaxiStatus()));
+        return orderRepository.save(order).getId();
     }
 
     public Page<Order> getPaginatedOrders(PageInfoDTO pageInfoDTO, Predicate predicate) {
@@ -80,7 +80,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void processOrder(Long orderId, boolean delete) {
+    public Long processOrder(Long orderId, boolean delete) {
         Order order = orderRepository.getById(orderId);
         order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, taxiStatusRepository.findByName("AVAILABLE").orElseThrow(IllegalArgumentException::new)));
         if (delete) {
@@ -90,7 +90,7 @@ public class OrderService {
             order.setOrderStatus(orderStatusRepository.findByName("DONE").orElseThrow(IllegalArgumentException::new));
             userService.increaseDiscount(order.getUser().getId());
         }
-        orderRepository.save(order);
+        return orderRepository.save(order).getId();
     }
 
     public Predicate makePredicate(PageInfoDTO pageInfoDTO) {
