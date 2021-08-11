@@ -11,6 +11,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
+
+/**
+ * Data transfer object for orders
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -1,6 +1,5 @@
 package ua.training.springproject.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
+/**
+ * Data transfer object for value
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

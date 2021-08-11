@@ -1,4 +1,4 @@
-package ua.training.springproject.utils;
+package ua.training.springproject.utils.handlers;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;

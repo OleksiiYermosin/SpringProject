@@ -47,41 +47,47 @@
         <div class="container">
             <div class="content-container">
                 <div class="main">
-                    <div th:if="${orders.isEmpty()==true}" style="display: flex; align-items: center; justify-content: center">
+                    <div th:if="${orders==null || orders.isEmpty()}" style="display: flex; align-items: center; justify-content: center">
                         <p th:text="#{orders.error.message}" style="font-size: 18px"></p>
                     </div>
-                    <form th:action="@{/admin/}" method="get" class="sorting-form">
+                    <form th:action="@{/admin/}" th:object="${pageInfoDTO}" method="get" style="width: 80%" class="sorting-form">
                         <div class="form-inner">
                             <div class="form1">
+                                <label for="name" th:text="#{name.message}" class="sorting-form-element"></label>
+                                <input type="text" pattern="[A-Z][a-z]+|[А-ЯЁІЇ][а-яёії']+" th:field="*{name}" id="name" class="sorting-form-element">
                                 <label for="sur" th:text="#{sur.message}" class="sorting-form-element"></label>
-                                <input type="text" id="sur" class="sorting-form-element">
-                                <label for="date" th:text="#{date.message}" class="sorting-form-element"></label>
-                                <input type="date" id="date" class="sorting-form-element">
+                                <input type="text" pattern="[A-Z][a-z]+|[А-ЯЁІЇ][а-яёії']+" th:field="*{surname}" id="sur" class="sorting-form-element">
+                                <input type="checkbox" th:field="*{searchByName}" class="sorting-form-small">
+                                <label for="date" style="width: 50px" th:text="#{date.message}" class="sorting-form-element"></label>
+                                <input type="date" th:field="*{date}" th:value="${pageInfoDTO.getDate()}" id="date" class="sorting-form-element">
+                                <input type="checkbox" th:field="*{searchByDate}" class="sorting-form-small">
                                 <button type="submit" class="btn btn-success" th:text="#{search.action}"></button>
                             </div>
                             <div class="form1">
                                 <label for="sort" th:text="#{sort.message}" class="sorting-form-element"></label>
                                 <select name="sort" id="sort" class="sorting-form-element" required>
-                                    <option th:selected="${sort.equals('id')}"  value="id" th:text="#{sort.id.message}"></option>
-                                    <option th:selected="${sort.equals('date')}" value="date" th:text="#{sort.date.message}"></option>
+                                    <option th:selected="${pageInfoDTO.getSort().equals('id')}"  value="id" th:text="#{sort.id.message}"></option>
+                                    <option th:selected="${pageInfoDTO.getSort().equals('date')}" value="date" th:text="#{sort.date.message}"></option>
+                                    <option th:selected="${pageInfoDTO.getSort().equals('total')}" value="total" th:text="#{sort.total.message}"></option>
                                 </select>
                                 <label for="sort-direction" th:text="#{sort.direction.message}" class="sorting-form-element"></label>
                                 <select name="sortDirection" id="sort-direction" class="sorting-form-element" required>
-                                    <option th:selected="${sortDirection.equals('asc')}" value="asc" th:text="#{sort.direction.asc.message}"></option>
-                                    <option th:selected="${sortDirection.equals('desc')}" value="desc" th:text="#{sort.direction.desc.message}"></option>
+                                    <option th:selected="${pageInfoDTO.getSortDirection().equals('asc')}" value="asc" th:text="#{sort.direction.asc.message}"></option>
+                                    <option th:selected="${pageInfoDTO.getSortDirection().equals('desc')}" value="desc" th:text="#{sort.direction.desc.message}"></option>
                                 </select>
                                 <button type="submit" class="btn btn-success" th:text="#{sort.action}"></button>
                             </div>
                         </div>
 
                     </form>
-                    <div th:if="${!orders.isEmpty()}" style="display: flex; align-items: center; justify-content: center">
+                    <div th:if="${orders!=null && !orders.isEmpty()}" style="display: flex; align-items: center; justify-content: center">
                         <p th:text="#{description.message}" style="font-size: 18px"></p>
                     </div>
-                    <table th:if="${!orders.isEmpty()}" class="table">
+                    <table th:if="${orders!=null && !orders.isEmpty()}" class="table">
                         <thead class="thead-dark">
                         <tr>
                             <th scope="col" >#</th>
+                            <th scope="col" th:text="#{client.info.message}"></th>
                             <th scope="col" th:text="#{start.address.prompt}"></th>
                             <th scope="col" th:text="#{finish.address.prompt}"></th>
                             <th scope="col" th:text="#{human.amount.prompt}"></th>
@@ -93,6 +99,7 @@
                         <tbody>
                         <tr th:each="order, iter : ${orders}">
                             <td th:text="${order.getId()}"></td>
+                            <td th:text="${order.getUser().getSurname() + ' ' + order.getUser().getName()}"></td>
                             <td th:text="${order.getAddressFrom()}"></td>
                             <td th:text="${order.getAddressTo()}"></td>
                             <td th:text="${order.getPeopleAmount()}"></td>
@@ -103,44 +110,66 @@
                                     <input type="hidden" th:value="${order.getId()}" name="id">
                                     <button type="submit" class="btn btn-success">✓</button>
                                 </form>
-                                <button type="button" th:if="${!order.getOrderStatus().getName().equals('CANCELED')}" th:attr="onclick=|myFunction('details${iter.index}')|" class="btn btn-info">i</button>
+                                <button type="button" th:if="${!order.getOrderStatus().getName().equals('CANCELED')}" th:attr="onclick=|myFunction('details${iter.index}')|" class="btn btn-info">
+                                    <span style="font-style: italic; font-weight: bold">i</span>
+                                </button>
                                 <p th:if="${order.getOrderStatus().getName().equals('CANCELED')}" th:text="#{order.canceled.value}" style="font-size: 18px"></p>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <div th:if="${orders.isEmpty()==false}" th:each="order, iter : ${orders}" class="con" th:id="'details'+${iter.index}">
+                    <div th:if="${orders!=null && !orders.isEmpty()}" th:each="order, iter : ${orders}" class="con" th:id="'details'+${iter.index}">
                         <div th:each="taxi : ${order.getTaxi()}">
                             <p th:text="#{taxi.info.message } + ': ' + ${taxi.getInfo()} + '. ' + #{driver.name.value} + ': ' + ${taxi.getDriver().getSurname() + ' ' + taxi.getDriver().getName().charAt(0)} + '.; ' + #{driver.phone.value} + ': ' + ${taxi.getDriver().getPhone()}"></p>
-                            <p th:if="${taxi.getTaxiClass().getName().equals('ECONOMY')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.economy.value}"></p>
-                            <p th:if="${taxi.getTaxiClass().getName().equals('COMFORT')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.comfort.value}"></p>
-                            <p th:if="${taxi.getTaxiClass().getName().equals('BUSINESS')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.business.value}"></p>
+                            <p th:if="${taxi.getTaxiClass().getName().equals('ECONOMY')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.economy.value} + '. ' + #{order.taxi.capacity} + ': ' + ${taxi.getCapacity()}"></p>
+                            <p th:if="${taxi.getTaxiClass().getName().equals('COMFORT')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.comfort.value} + '. ' + #{order.taxi.capacity} + ': ' + ${taxi.getCapacity()}"></p>
+                            <p th:if="${taxi.getTaxiClass().getName().equals('BUSINESS')}" th:text="#{taxi.class.value} + ': ' + #{taxi.class.business.value} + '. ' + #{order.taxi.capacity} + ': ' + ${taxi.getCapacity()}"></p>
                         </div>
                         <p th:text="#{distance.value} + ': ' + ${order.getDistance()}" style="margin-top: 0"></p>
                     </div>
-                    <div th:if="${!orders.isEmpty() && (orders.hasNext()||orders.hasPrevious())}" style="display: flex; flex-direction: row; justify-content: center">
-                        <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${!orders.isFirst()}" th:action="@{/admin/}">
+                    <div th:if="${orders!=null && !orders.isEmpty() && (orders.hasNext()||orders.hasPrevious())}" style="display: flex; flex-direction: row; justify-content: center; margin-bottom: 5%">
+                        <form method="get" th:object="${pageInfoDTO}" style="width: 40px; display: flex; align-items: center" th:if="${!orders.isFirst()}" th:action="@{/admin/}">
                             <input type="hidden" th:value="${orders.previousOrFirstPageable().first().getPageNumber()}" name="page">
-                            <input type="hidden"  th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
+                            <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
+                            <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
                             <button type="submit" class="btn btn-primary">«</button>
                         </form>
-                        <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.hasPrevious()}" th:action="@{/admin/}">
+                        <form method="get" th:object="${pageInfoDTO}" style="width: 40px; display: flex; align-items: center" th:if="${orders.hasPrevious()}" th:action="@{/admin/}">
                             <input type="hidden" th:value="${orders.previousPageable().getPageNumber()}" name="page">
-                            <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
+                            <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
+                            <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
                             <button type="submit" class="btn btn-primary">‹</button>
                         </form>
-                        <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.hasNext()}" th:action="@{/admin/}">
+                        <form method="get" th:object="${pageInfoDTO}" style="width: 40px; display: flex; align-items: center" th:if="${orders.hasNext()}" th:action="@{/admin/}">
                             <input type="hidden" th:value="${orders.nextPageable().getPageNumber()}" name="page">
-                            <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
+                            <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
+                            <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
                             <button type="submit" class="btn btn-primary">›</button>
                         </form>
-                        <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${!orders.isLast()}" th:action="@{/admin/}">
+                        <form method="get" th:object="${pageInfoDTO}" style="width: 40px; display: flex; align-items: center" th:if="${!orders.isLast()}" th:action="@{/admin/}">
                             <input type="hidden" th:value="${orders.getTotalPages()-1}" name="page">
-                            <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
+                            <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
+                            <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
+                            <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
                             <button type="submit" class="btn btn-primary">»</button>
                         </form>
                     </div>
@@ -150,14 +179,5 @@
     </div>
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>
-<script type="text/javascript">
-    Date.prototype.toDateInputValue = (function() {
-        var local = new Date(this);
-        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-        return local.toJSON().slice(0,10);
-    });
-
-    document.getElementById('date').value = new Date().toDateInputValue();
-</script>
 </body>
 </html>

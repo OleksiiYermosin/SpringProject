@@ -50,7 +50,7 @@
                 <p th:inline="text" style="margin-bottom: 0">[[#{balance.value}]]: <span th:text="${user.getBalance()}" style="font-weight: bold"></span></p>
                 <a th:href="@{/user/recharge-balance}" th:text="#{recharge.balance.value}" style="font-size: 20px"></a>
                 <p th:inline="text">[[#{discount.value}]]: <span th:text="${user.getDiscount()+'%'}" style="font-weight: bold"></span></p>
-                <a th:href="@{/user/}" th:text="#{order.taxi.value}"></a>
+                <a th:href="@{/user/order-taxi}" th:text="#{order.taxi.value}"></a>
             </div>
         </div>
     </div>

@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Entity for work with database
+ */
 @Data
 @Builder
 @NoArgsConstructor

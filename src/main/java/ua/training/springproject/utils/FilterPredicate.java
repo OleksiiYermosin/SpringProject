@@ -1,6 +1,5 @@
 package ua.training.springproject.utils;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import lombok.AccessLevel;
@@ -17,7 +16,6 @@ public class FilterPredicate {
 
     public <T> FilterPredicate add(T field, Function<T, Predicate> function){
         if(field != null && !field.toString().isEmpty()){
-            System.out.println("Field" + field);
             predicates.add(function.apply(field));
         }
         return this;

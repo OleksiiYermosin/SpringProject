@@ -10,8 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ua.training.springproject.services.UserService;
-import ua.training.springproject.utils.CustomSuccessHandler;
+import ua.training.springproject.utils.handlers.CustomSuccessHandler;
 
+/**
+ * Spring security configuration
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -39,8 +42,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                     .logout()
                     .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
-                    .logoutSuccessUrl("/login")
                     .permitAll();
 
     }

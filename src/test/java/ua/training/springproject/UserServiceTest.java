@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.training.springproject.entities.User;
+import ua.training.springproject.exceptions.NotEnoughMoneyException;
 import ua.training.springproject.repositories.RoleRepository;
 import ua.training.springproject.services.UserService;
 
@@ -62,10 +63,10 @@ public class UserServiceTest {
         Assert.assertEquals(0, finishBalance.compareTo(initialBalance.add(BigDecimal.valueOf(decrease))));
     }
 
-    @Test
+    @Test(expected = NotEnoughMoneyException.class)
     public void testBalancePersistence(){
         Long id = ((User) userService.loadUserByUsername("test")).getId();
-        Assert.assertFalse(userService.getMoneyFromUser(BigDecimal.valueOf(10), id));
+        userService.getMoneyFromUser(BigDecimal.valueOf(10), id);
     }
 
     @Test

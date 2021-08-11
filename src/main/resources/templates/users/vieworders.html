@@ -118,25 +118,25 @@
                         <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.isFirst()==false}" th:action="@{/user/orders}">
                             <input type="hidden" th:value="${orders.previousOrFirstPageable().first().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${sortDirection}" name="sortDirection">
                             <button type="submit" class="btn btn-primary">«</button>
                         </form>
                         <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.hasPrevious()==true}" th:action="@{/user/orders}">
                             <input type="hidden" th:value="${orders.previousPageable().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${sortDirection}" name="sortDirection">
                             <button type="submit" class="btn btn-primary">‹</button>
                         </form>
                         <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.hasNext()==true}" th:action="@{/user/orders}">
                             <input type="hidden" th:value="${orders.nextPageable().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${sortDirection}" name="sortDirection">
                             <button type="submit" class="btn btn-primary">›</button>
                         </form>
                         <form method="get" style="width: 40px; display: flex; align-items: center" th:if="${orders.isLast()==false}" th:action="@{/user/orders}">
                             <input type="hidden" th:value="${orders.getTotalPages()-1}" name="page">
                             <input type="hidden" th:value="${sort}" name="sort">
-                            <input type="hidden" th:value="${sortDirection}" name="sort-direction">
+                            <input type="hidden" th:value="${sortDirection}" name="sortDirection">
                             <button type="submit" class="btn btn-primary">»</button>
                         </form>
                     </div>

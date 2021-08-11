@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Entity for work with database
+ */
 @Data
 @Builder
 @AllArgsConstructor

@@ -6,6 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Entity for work with database
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
