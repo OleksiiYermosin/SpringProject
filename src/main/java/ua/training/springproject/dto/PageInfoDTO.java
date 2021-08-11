@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Pattern;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -18,9 +19,11 @@ public class PageInfoDTO {
 
     private String sortDirection = "asc";
 
-    private String surnameAndName;
+    private String surname;
 
-    private Date date;
+    private String name;
+
+    private String date;
 
     private boolean searchByName;
 

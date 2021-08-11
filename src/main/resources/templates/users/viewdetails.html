@@ -50,8 +50,11 @@
         <div class="container">
             <div class="content-container">
                 <div class="main">
-                    <div th:if="${session.order==null && session.isFound==null}" style="display: flex; align-items: center; justify-content: center">
+                    <div th:if="${session.order==null && session.isFound==null && orderError==null}" style="display: flex; align-items: center; justify-content: center">
                         <p th:text="#{session.error.message}" style="font-size: 18px"></p>
+                    </div>
+                    <div th:if="${session.order==null && orderError!=null && orderError==true}" style="display: flex; align-items: center; justify-content: center">
+                        <p th:text="#{order.error.message}" style="font-size: 18px"></p>
                     </div>
                     <div th:if="${session.isFound==false}" style="display: flex; align-items: center; justify-content: center">
                         <p th:text="#{order.not.found.message}" style="font-size: 18px"></p>

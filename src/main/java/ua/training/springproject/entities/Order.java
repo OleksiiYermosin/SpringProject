@@ -8,10 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -37,9 +39,9 @@ public class Order {
     @Column(name = "total")
     private BigDecimal total;
 
-    //@Temporal(TemporalType.DATE)
+    @CreatedDate
     @Column(name = "date")
-    private Date date;
+    private LocalDate date;
 
     @Column(name = "address_from")
     private String addressFrom;

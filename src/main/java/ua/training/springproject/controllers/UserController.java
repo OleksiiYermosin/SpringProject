@@ -16,6 +16,8 @@ import ua.training.springproject.dto.ValueDTO;
 import ua.training.springproject.entities.Order;
 import ua.training.springproject.entities.Taxi;
 import ua.training.springproject.entities.User;
+import ua.training.springproject.exceptions.NotEnoughMoneyException;
+import ua.training.springproject.exceptions.TaxiBusyException;
 import ua.training.springproject.services.OrderService;
 import ua.training.springproject.services.TaxiService;
 import ua.training.springproject.services.UserService;
@@ -99,13 +101,18 @@ public class UserController {
 
     @SuppressWarnings("unchecked")
     @PostMapping("/order-taxi/new-order")
-    public String makeOrder(@RequestParam(name = "index") int index, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String makeOrder(@RequestParam(name = "index") int index, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
         Order order = ((List<Order>) session.getAttribute("order")).get(index);
         User user = getUser();
-        if (userService.getMoneyFromUser(order.getTotal(), user.getId())) {
-            orderService.saveOrder(order);
-            session.removeAttribute("order");
-            return "redirect:/user/";
+        if (getUser().getBalance().compareTo(order.getTotal())>=0) {
+            session.invalidate();
+            try {
+                orderService.saveOrder(order);
+            }catch(TaxiBusyException | IllegalArgumentException | NotEnoughMoneyException exception){
+                redirectAttributes.addFlashAttribute("orderError", true);
+                return "redirect:/user/order-taxi/view-new-order";
+            }
+            return "redirect:/user/orders";
         }
         redirectAttributes.addFlashAttribute("total", order.getTotal().subtract(user.getBalance()));
         return "redirect:/user/recharge-balance";

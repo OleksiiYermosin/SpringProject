@@ -18,7 +18,6 @@ import ua.training.springproject.utils.FilterPredicate;
 import ua.training.springproject.utils.constants.MyConstants;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -43,18 +42,16 @@ public class OrderService {
 
     public Order prepareOrder(OrderDTO orderDTO, Set<Taxi> taxi, User user) {
         BigDecimal distance = calculateTimeOrDistance(orderDTO.getStartAddress() + orderDTO.getFinishAddress(), MyConstants.AVERAGE_DISTANCE, 2);
-        BigDecimal time = calculateTimeOrDistance(orderDTO.getStartAddress(), MyConstants.AVERAGE_TIME, 0);
         BigDecimal multiplier = taxi.stream().map(t -> t.getTaxiClass().getMultiplier()).reduce(BigDecimal.valueOf(0), BigDecimal::add);
-        BigDecimal total = calculateTotal(multiplier.doubleValue(), user.getDiscount().doubleValue(), distance.doubleValue());
         taxi.forEach(t -> t.setTaxiStatus(new TaxiStatus(2L, "BUSY")));
         return Order.builder()
                 .user(user)
                 .orderStatus(new OrderStatus(1L, "ACTIVE"))
-                .total(total)
+                .total(calculateTotal(multiplier.doubleValue(), user.getDiscount().doubleValue(), distance.doubleValue()))
                 .addressFrom(orderDTO.getStartAddress())
                 .addressTo(orderDTO.getFinishAddress())
                 .distance(distance)
-                .time(time)
+                .time(calculateTimeOrDistance(orderDTO.getStartAddress(), MyConstants.AVERAGE_TIME, 0))
                 .peopleAmount(orderDTO.getPeopleAmount())
                 .taxi(taxi)
                 .build();
@@ -62,8 +59,9 @@ public class OrderService {
 
     @Transactional
     public Long saveOrder(Order order) {
-        order.setDate(Date.valueOf(LocalDate.now()));
-        order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, t.getTaxiStatus()));
+        order.setDate(LocalDate.now());
+        order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, t.getTaxiStatus(), true));
+        userService.getMoneyFromUser(order.getTotal(), order.getUser().getId());
         return orderRepository.save(order).getId();
     }
 
@@ -82,7 +80,7 @@ public class OrderService {
     @Transactional
     public Long processOrder(Long orderId, boolean delete) {
         Order order = orderRepository.getById(orderId);
-        order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, taxiStatusRepository.findByName("AVAILABLE").orElseThrow(IllegalArgumentException::new)));
+        order.getTaxi().forEach(t -> taxiService.updateTaxiStatus(t, taxiStatusRepository.findByName("AVAILABLE").orElseThrow(IllegalArgumentException::new), false));
         if (delete) {
             order.setOrderStatus(orderStatusRepository.findByName("CANCELED").orElseThrow(IllegalArgumentException::new));
             userService.updateUserBalance(order.getUser().getId(), order.getTotal().subtract(BigDecimal.valueOf(MyConstants.INITIAL_PRICE)));
@@ -94,10 +92,9 @@ public class OrderService {
     }
 
     public Predicate makePredicate(PageInfoDTO pageInfoDTO) {
-        String[] data = (pageInfoDTO.getSurnameAndName() != null && pageInfoDTO.getSurnameAndName().contains(" ") && pageInfoDTO.getSurnameAndName().length() > 2 ? pageInfoDTO.getSurnameAndName().split(" ") : new String[]{null, null});
-        return FilterPredicate.builder().add(pageInfoDTO.isSearchByName() ? data[0] : null, QOrder.order.user.surname::eq)
-                .add(pageInfoDTO.isSearchByName() ? data[1] : null, QOrder.order.user.name::eq)
-                .add(pageInfoDTO.isSearchByDate() ? pageInfoDTO.getDate() : null, QOrder.order.date::eq).build();
+        return FilterPredicate.builder().add(pageInfoDTO.isSearchByName() && !pageInfoDTO.getName().isEmpty() ? pageInfoDTO.getName() : null, QOrder.order.user.name::eq)
+                .add(pageInfoDTO.isSearchByName() && !pageInfoDTO.getSurname().isEmpty() ? pageInfoDTO.getSurname() : null, QOrder.order.user.surname::eq)
+                .add(pageInfoDTO.isSearchByDate() ? LocalDate.parse(pageInfoDTO.getDate()) : null, QOrder.order.date::eq).build();
     }
 
     private BigDecimal calculateTimeOrDistance(String hashString, double multiplier, int scale) {

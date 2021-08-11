@@ -53,8 +53,8 @@ public class TaxiServiceTest {
     @Test
     public void testStatusUpdate() {
         taxi = taxiRepository.getById(1L);
-        boolean result = taxiService.updateTaxiStatus(taxi, taxiStatusRepository.findByName("BUSY").orElseThrow(IllegalArgumentException::new));
-        taxiService.updateTaxiStatus(taxi, taxiStatusRepository.findByName("AVAILABLE").orElseThrow(IllegalArgumentException::new));
+        boolean result = taxiService.updateTaxiStatus(taxi, taxiStatusRepository.findByName("BUSY").orElseThrow(IllegalArgumentException::new), false);
+        taxiService.updateTaxiStatus(taxi, taxiStatusRepository.findByName("AVAILABLE").orElseThrow(IllegalArgumentException::new), false);
         Assert.assertTrue(result);
     }
 

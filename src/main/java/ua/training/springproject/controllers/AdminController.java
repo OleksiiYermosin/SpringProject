@@ -27,7 +27,6 @@ public class AdminController {
         this.userService = userService;
     }
 
-
     @GetMapping("/")
     public String index(@ModelAttribute(name = "pageInfoDTO") PageInfoDTO pageInfoDTO, Model model) {
         Page<Order> orders = orderService.getPaginatedOrders(pageInfoDTO, orderService.makePredicate(pageInfoDTO));

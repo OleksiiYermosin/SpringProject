@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.training.springproject.entities.Role;
 import ua.training.springproject.entities.User;
+import ua.training.springproject.exceptions.NotEnoughMoneyException;
 import ua.training.springproject.repositories.UserRepository;
 import ua.training.springproject.utils.constants.MyConstants;
 
@@ -45,8 +46,8 @@ public class UserService implements UserDetailsService {
     @Transactional
     public boolean getMoneyFromUser(BigDecimal total, Long id){
         User user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        if (user.getBalance().compareTo(total)==-1){
-            return false;
+        if (user.getBalance().compareTo(total)<0){
+            throw new NotEnoughMoneyException("You don`t have enough money to make order");
         }
         user.setBalance(user.getBalance().subtract(total));
         userRepository.save(user);

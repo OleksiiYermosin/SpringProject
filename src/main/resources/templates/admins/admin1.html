@@ -50,13 +50,15 @@
                     <div th:if="${orders==null || orders.isEmpty()}" style="display: flex; align-items: center; justify-content: center">
                         <p th:text="#{orders.error.message}" style="font-size: 18px"></p>
                     </div>
-                    <form th:action="@{/admin/}" th:object="${pageInfoDTO}" method="get" class="sorting-form">
+                    <form th:action="@{/admin/}" th:object="${pageInfoDTO}" method="get" style="width: 80%" class="sorting-form">
                         <div class="form-inner">
                             <div class="form1">
-                                <label for="sur" th:text="#{client.info.message}" class="sorting-form-element"></label>
-                                <input type="text" pattern="[A-Z][a-z]+\s[A-Z][a-z]+|[А-ЯЁІЇ][а-яёії']+\\s[А-ЯЁІЇ][а-яёії']+" th:field="*{surnameAndName}" id="sur" class="sorting-form-element">
+                                <label for="name" th:text="#{name.message}" class="sorting-form-element"></label>
+                                <input type="text" pattern="[A-Z][a-z]+|[А-ЯЁІЇ][а-яёії']+" th:field="*{name}" id="name" class="sorting-form-element">
+                                <label for="sur" th:text="#{sur.message}" class="sorting-form-element"></label>
+                                <input type="text" pattern="[A-Z][a-z]+|[А-ЯЁІЇ][а-яёії']+" th:field="*{surname}" id="sur" class="sorting-form-element">
                                 <input type="checkbox" th:field="*{searchByName}" class="sorting-form-small">
-                                <label for="date" th:text="#{date.message}" class="sorting-form-element"></label>
+                                <label for="date" style="width: 50px" th:text="#{date.message}" class="sorting-form-element"></label>
                                 <input type="date" th:field="*{date}" th:value="${pageInfoDTO.getDate()}" id="date" class="sorting-form-element">
                                 <input type="checkbox" th:field="*{searchByDate}" class="sorting-form-small">
                                 <button type="submit" class="btn btn-success" th:text="#{search.action}"></button>
@@ -129,7 +131,8 @@
                             <input type="hidden" th:value="${orders.previousOrFirstPageable().first().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
                             <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
-                            <input type="hidden" th:if="${pageInfoDTO.getSurnameAndName()!=null && !pageInfoDTO.getSurnameAndName().isEmpty()}" th:value="${pageInfoDTO.getSurnameAndName()}" name="surnameAndName">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
                             <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
@@ -139,7 +142,8 @@
                             <input type="hidden" th:value="${orders.previousPageable().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
                             <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
-                            <input type="hidden" th:if="${pageInfoDTO.getSurnameAndName()!=null && !pageInfoDTO.getSurnameAndName().isEmpty()}" th:value="${pageInfoDTO.getSurnameAndName()}" name="surnameAndName">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
                             <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
@@ -149,7 +153,8 @@
                             <input type="hidden" th:value="${orders.nextPageable().getPageNumber()}" name="page">
                             <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
                             <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
-                            <input type="hidden" th:if="${pageInfoDTO.getSurnameAndName()!=null && !pageInfoDTO.getSurnameAndName().isEmpty()}" th:value="${pageInfoDTO.getSurnameAndName()}" name="surnameAndName">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
                             <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
@@ -159,7 +164,8 @@
                             <input type="hidden" th:value="${orders.getTotalPages()-1}" name="page">
                             <input type="hidden" th:value="${pageInfoDTO.getSort()}" name="sort">
                             <input type="hidden" th:value="${pageInfoDTO.getSortDirection()}" name="sortDirection">
-                            <input type="hidden" th:if="${pageInfoDTO.getSurnameAndName()!=null && !pageInfoDTO.getSurnameAndName().isEmpty()}" th:value="${pageInfoDTO.getSurnameAndName()}" name="surnameAndName">
+                            <input type="hidden" th:if="${pageInfoDTO.getName()!=null && !pageInfoDTO.getName().isEmpty()}" th:value="${pageInfoDTO.getName()}" name="name">
+                            <input type="hidden" th:if="${pageInfoDTO.getSurname()!=null && !pageInfoDTO.getSurname().isEmpty()}" th:value="${pageInfoDTO.getSurname()}" name="surname">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.isSearchByDate()}" name="searchByDate">
                             <input type="hidden" th:if="${pageInfoDTO.isSearchByName()}" th:value="${pageInfoDTO.isSearchByName()}" name="searchByName">
                             <input type="hidden" th:if="${pageInfoDTO.getDate()!=null && pageInfoDTO.isSearchByDate()}" th:value="${pageInfoDTO.getDate()}" name="date">
@@ -173,7 +179,7 @@
 </div>
 <footer style="min-height: 70px" class="p-3 bg-dark text-white"></footer>
 <script type="text/javascript">
-    Date.prototype.toDateInputValue = (function() {
+    /*Date.prototype.toDateInputValue = (function() {
         var local = new Date(this);
         local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
         return local.toJSON().slice(0,10);
@@ -181,9 +187,11 @@
     console.log(document.getElementById('date').value);
     if(document.getElementById('date').value===null){
         document.getElementById('date').value = new Date().toDateInputValue();
-        outp
-    }
-
+    }*/
+    console.log("value: " + document.getElementById('date').value)
+    console.log("isNull: " + document.getElementById('date').value===null)
+    console.log("isEmpty: " + document.getElementById('date').value==="  ")
+    console.log("class: " + typeof document.getElementById('date').value)
 </script>
 </body>
 </html>
